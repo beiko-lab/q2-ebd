@@ -1,2 +1,2 @@
 include versioneer.py
-include q2_diversity/_version.py
+include q2_ebd/_version.py
