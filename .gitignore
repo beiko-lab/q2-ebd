@@ -66,3 +66,4 @@ target/
 
 node_modules
 *.qzv
+*.qza
