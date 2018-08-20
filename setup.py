@@ -15,7 +15,8 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     packages=find_packages(),
-    package_data={'q2_ebd': ['citations.bib'],
+    package_data={'q2_ebd': ['citations.bib',
+                             'assets/index.html'],
                   'q2_ebd.tests': [
                       'data/*'
                   ]},

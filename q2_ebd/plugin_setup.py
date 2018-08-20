@@ -9,13 +9,14 @@
 from qiime2.plugin import (Plugin, Str, Properties, Choices, Int, Bool, Range,
                            Float, Set, Visualization, Metadata, MetadataColumn,
                            Categorical, Citations)
+from qiime2.plugin import SemanticType
 
 import q2_ebd
-from q2_ebd._method import phylogenetic_metrics, non_phylogenetic_metrics
+from q2_ebd._method import phylogenetic_metrics, non_phylogenetic_metrics, \
+                           cluster_distance_matrices, plot
 from q2_types.feature_table import FeatureTable, Frequency
 from q2_types.distance_matrix import DistanceMatrix
 from q2_types.tree import Phylogeny, Rooted
-from q2_types.ordination import PCoAResults
 
 
 citations = Citations.load('citations.bib', package='q2_ebd')
@@ -31,6 +32,18 @@ plugin = Plugin(
                  'metadata.'),
     short_description='Plugin for exploring community diversity.',
 )
+
+#plugin.methods.register_function(
+#    function=cluster_distance_matrices,
+#    inputs={'distance_matrix_dir': DistanceMatrixDirectory},
+#    outputs=[('distance_matrix', DistanceMatrix)],
+#    parameters={},
+#    input_descriptions={
+#        'distance_matrix_dir': ('Directory containing the distance matrices to '
+#                                'compare.')},
+#    name='cluster_distance_matrices',
+#    description=('Creates a hierarchical clustering of the distance matrices in '
+#                 'a given directory.'))
 
 plugin.methods.register_function(
     function=q2_ebd.beta_phylogenetic,
@@ -81,3 +94,32 @@ plugin.methods.register_function(
     citations=[citations['parks2013measures']]
 )
 
+plugin.visualizers.register_function(
+    function=q2_ebd.plot,
+    inputs={'distance_matrix': Set[DistanceMatrix]},
+    input_descriptions={'distance_matrix': 'Distance matrix to be plotted. Can be \
+                                            repeated to display more than one.'},
+    parameters={},
+    name='PCoA Plot',
+    description=("Not yet implemented"),
+    citations=[]
+)
+#class DataMatrices(model.DirectoryFormat):
+#    matrices = model.FileCollection(r'.+_.+_.+.qza',
+#                                    format=DistanceMatrix)
+#    @matrices.set_path_maker
+#    def matrices_path_maker(self, metric, phylogenetic, weighted):
+#        return '%s_%s_%s.qza' % (metric, phylogenetic, weighted)
+#
+#    def _validate_(self, level):
+#        for p in self.path.iterdir():
+#            if p.is_dir():
+#                d = p.relative_to(self.path)
+#                raise ValidationError("Contains a subdirectory: %s" % d)
+#            else:
+#                if p.name.endswith(".qza"):
+#                    metric, phylogenetic, weighted = p.name.split("_")
+#                    weighted = weighted.split(".")[0]
+#                    if phylogenetic not in ["phylogenetic", "nonphylogenetic"]:
+#                        raise ValidationError("Directory contains an unknown artifact.")
+#
